@@ -67,15 +67,21 @@ var configCmd = &cobra.Command{
 			return fmt.Errorf("failed to select AWS profile: %w", err)
 		}
 
+		scanProfile, err := terminal.PromptDefault("AWS Profile for cluster discovery, if different", "")
+		if err != nil {
+			return fmt.Errorf("failed to select AWS profile for cluster discovery: %w", err)
+		}
+
 		regions, err := terminal.MultiSelect("AWS regions", config.ValidRegions)
 		if err != nil {
 			return fmt.Errorf("failed to select AWS regions: %w", err)
 		}
 
 		account := clusters.EKSAccount{
-			Profile: profile,
-			Regions: regions,
-			Name:    accountName,
+			Profile:     profile,
+			ScanProfile: scanProfile,
+			Regions:     regions,
+			Name:        accountName,
 		}
 		cfg.AddAccount(account)
 

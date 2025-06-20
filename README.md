@@ -42,7 +42,8 @@ accounts:
       - eu-west-1
     format: "${name}.${clusterArn}"
   - name: Prod
-    profile: prod-admin-readonly
+    profile: prod-admin
+    scanProfile: prod-readonly
     regions:
       - us-east-1
       - us-east-2
@@ -57,7 +58,9 @@ accounts:
 
 Each entry in `accounts` can have the following fields:
 - `name` - A convenient name you wish to give for this AWS account
-- `profile` - The AWS profile name used to list & describe EKS clusters
+- `profile` - The AWS profile name to use for the kubeconfig context
+- `scanProfile` - Optional AWS profile name used for listing/describing EKS clusters (if cluster discovery and access
+permissions are separate). Same as `profile` by default.
 - `regions` - The list of AWS regions that will be searched for EKS clusters
 - `format` - The format of the kubeconfig contexts, users, and clusters. By default, all kubeconfig resources will be
 named `${name}.${region}.${clusterName}`. For example, if the `Dev` account within the config file above had a cluster

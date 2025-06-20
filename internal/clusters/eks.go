@@ -14,11 +14,12 @@ import (
 )
 
 type EKSAccount struct {
-	Profile    string    `yaml:"profile"`
-	Regions    []string  `yaml:"regions"`
-	Name       string    `yaml:"name"`
-	Format     string    `yaml:"format"`
-	ExtraUsers []EKSUser `yaml:"extraUsers,omitempty"`
+	Profile     string    `yaml:"profile"`
+	ScanProfile string    `yaml:"scanProfile,omitempty"`
+	Regions     []string  `yaml:"regions"`
+	Name        string    `yaml:"name"`
+	Format      string    `yaml:"format"`
+	ExtraUsers  []EKSUser `yaml:"extraUsers,omitempty"`
 }
 
 type EKSUser struct {
@@ -65,7 +66,12 @@ const (
 func (a EKSAccount) GenerateKubeConfig() (*kubecfg.KubeConfigPatch, []error) {
 	accountKubeConfig := &kubecfg.KubeConfigPatch{}
 
-	cfg, err := config.LoadDefaultConfig(context.Background(), config.WithSharedConfigProfile(a.Profile))
+	scanProfile := a.ScanProfile
+	if scanProfile == "" {
+		scanProfile = a.Profile
+	}
+
+	cfg, err := config.LoadDefaultConfig(context.Background(), config.WithSharedConfigProfile(scanProfile))
 	if err != nil {
 		return accountKubeConfig, []error{err}
 	}
